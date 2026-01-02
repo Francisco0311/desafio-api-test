@@ -1,27 +1,26 @@
 const request = require('supertest');
 
-describe('Testes de API - ServeRest (Fluxo Completo)', () => {
-  const url = 'https://serverest.dev';
-  const emailValido = `francisco_qa_${Math.floor(Math.random() * 10000)}@teste.com`;
+describe('Testes de API - JSONPlaceholder (Requisitos Oficiais)', () => {
+  const url = 'https://jsonplaceholder.typicode.com';
 
-  it('Deve cadastrar um novo usuário com sucesso (POST)', async () => {
+  it('Deve validar o método GET /comments', async () => {
+    const response = await request(url).get('/comments');
+    
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.length).toBeGreaterThan(0);
+  });
+
+  it('Deve validar o método POST /albums', async () => {
     const response = await request(url)
-      .post('/usuarios')
+      .post('/albums')
       .send({
-        nome: "Francisco QA",
-        email: emailValido,
-        password: "teste",
-        administrador: "true"
+        title: "Album de Teste Francisco QA",
+        userId: 1
       });
 
     expect(response.status).toBe(201);
-    expect(response.body.message).toBe("Cadastro realizado com sucesso");
-  });
-
-  it('Deve listar usuários cadastrados (GET)', async () => {
-    const response = await request(url).get('/usuarios');
-    
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('usuarios');
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.title).toBe("Album de Teste Francisco QA");
   });
 });
